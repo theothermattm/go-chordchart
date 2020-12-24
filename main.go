@@ -19,6 +19,7 @@ type chord struct {
 
 var (
 	inputChord   string
+	debugMode    string
 	mappedChords map[string][]chord
 )
 
@@ -35,21 +36,44 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("Searching chord(s): %s\n", inputChord)
-	//fmt.Print(mappedChords[inputChord])
-	printChords(mappedChords[inputChord])
+	if len(debugMode) > 0 {
+		log.SetLevel(log.DebugLevel)
+	}
+
+	fmt.Printf("Searching chord(s): %s\n\n", inputChord)
+	var transformedInput = strings.Trim(strings.ToUpper(inputChord), " ")
+	fmt.Println(formatOutput(mappedChords[transformedInput]))
 }
 
-func printChords(chords []chord) {
+func formatOutput(chords []chord) string {
 
+	var output = "No chords found"
 	if len(chords) > 1 {
-		fmt.Println("Chord: " + chords[1].name)
-		fmt.Println("Type: " + chords[1].chordType)
-		fmt.Println("Notes: " + chords[1].notes)
-		for _, result := range chords {
-			fmt.Println(result.fingering)
+		output = ""
+		output = output + "Chord: \t\t" + chords[1].name + "\n"
+		output = output + "Type: \t\t" + chords[1].chordType + "\n"
+		output = output + "Notes: \t\t" + chords[1].notes + "\n\n"
+		for _, chord := range chords {
+			output = output + formatFingering(chord.fingering) + "\n"
 		}
 	}
+
+	return output
+}
+
+func formatFingering(fingering string) string {
+	var values = strings.Split(fingering, " ")
+	var newResult = ""
+	for _, value := range values {
+		if len(value) > 1 {
+			newResult = newResult + " " + value
+		} else {
+			newResult = newResult + "  " + value
+		}
+
+	}
+
+	return newResult
 }
 
 func parseChordFile() {
@@ -74,7 +98,8 @@ func parseChordFile() {
 				reOrResult := reOr.FindAllStringSubmatch(chordName, -1)
 				for _, n := range reOrResult {
 					var chordKey = strings.Trim(strings.ToUpper(n[1]), " ")
-					newChord := chord{name: n[1], fingering: m[2], notes: m[3], chordType: m[4]}
+					newChord := chord{name: strings.Trim(m[1], " "),
+						fingering: strings.Trim(m[2], " "), notes: strings.Trim(m[3], " "), chordType: strings.Trim(m[4], " ")}
 					log.Debug("Keying new chord with OR: {" + chordKey + "}\n")
 					mappedChords[chordKey] = append(mappedChords[chordKey], newChord)
 				}
@@ -95,8 +120,8 @@ func parseChordFile() {
 
 func init() {
 	// TODO add a debug flag
-	log.SetLevel(log.DebugLevel)
 	flag.StringVarP(&inputChord, "chord", "c", "", "Search Chords")
+	flag.StringVarP(&debugMode, "debug", "d", "", "Debug Mode")
 	mappedChords = make(map[string][]chord)
 	parseChordFile()
 }
