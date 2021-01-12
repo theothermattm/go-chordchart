@@ -10,6 +10,8 @@ import (
 	"strings"
 )
 
+const NoteSpacing = "  "
+
 type chord struct {
 	name      string
 	notes     string
@@ -24,8 +26,6 @@ var (
 )
 
 func main() {
-
-
 	var transformedInput = strings.Trim(strings.ToUpper(inputChord), " ")
 	fmt.Printf("Searching chord(s): {%s}\n\n", transformedInput)
 	fmt.Println(formatOutput(mappedChords[transformedInput]))
@@ -36,11 +36,30 @@ func formatOutput(chords []chord) string {
 	var output = "No chords found"
 	if len(chords) >= 1 {
 		output = ""
-		output = output + "Chord: \t" + chords[0].name + "\n"
-		output = output + "Type: t" + chords[0].chordType + "\n"
-		output = output + "Notes: \t" + chords[0].notes + "\n\n"
+		output += "Chord: \t" + chords[0].name + "\n"
+		output += "Type: \t" + chords[0].chordType + "\n"
+		output += "Notes: \t" + chords[0].notes + "\n\n"
+		notes := "EADGBe"
+		notesArray := strings.Split(notes, "")
+
+		output += "\t"
+		for _, note := range notesArray {
+			output += NoteSpacing + note
+		}
+		output += "\n"
+
+		output += "\t" + NoteSpacing
+
+		dividerString := ""
+		for i := 1; i <= len(notes) ; i++ {
+			 dividerString += " " + NoteSpacing
+		}
+		dividerString = strings.ReplaceAll(dividerString, " ", "-")
+		dividerString = dividerString[:len(dividerString)-len(NoteSpacing)]
+		output += dividerString + "\n"
+
 		for _, chord := range chords {
-			output = output + formatFingering(chord.fingering) + "\n"
+			output += "\t" + formatFingering(chord.fingering) + "\n"
 		}
 	}
 
