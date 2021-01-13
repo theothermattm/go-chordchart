@@ -85,14 +85,12 @@ func parseChordFile() {
 	 riceConf := rice.Config{
 	 	LocateOrder: []rice.LocateMethod{rice.LocateEmbedded, rice.LocateAppended, rice.LocateFS},
 	 }
-	log.Info("Opening the static folder")
 	filesBox, err := riceConf.FindBox("static")
 	if err != nil {
 		log.Fatal("can't get static")
 		log.Fatal(err)
 	}
 	// get file contents as string
-	log.Info("Opening the file")
 	chordsFileString, err := filesBox.String("chords.csv")
 	if err != nil {
 		log.Fatal("can't get the chords")
