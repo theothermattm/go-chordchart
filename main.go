@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
+	"github.com/GeertJohan/go.rice"
 	flag "github.com/ogier/pflag"
 	log "github.com/sirupsen/logrus"
 	"os"
@@ -82,15 +82,26 @@ func formatFingering(fingering string) string {
 }
 
 func parseChordFile() {
-	file, err := os.Open("./chords.csv")
+	 riceConf := rice.Config{
+	 	LocateOrder: []rice.LocateMethod{rice.LocateEmbedded, rice.LocateAppended, rice.LocateFS},
+	 }
+	log.Info("Opening the static folder")
+	filesBox, err := riceConf.FindBox("static")
 	if err != nil {
+		log.Fatal("can't get static")
 		log.Fatal(err)
 	}
-	defer file.Close()
+	// get file contents as string
+	log.Info("Opening the file")
+	chordsFileString, err := filesBox.String("chords.csv")
+	if err != nil {
+		log.Fatal("can't get the chords")
+		log.Fatal(err)
+	}
+	
+	lines := strings.Split(chordsFileString, "\n")
 
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		var text = scanner.Text()
+	for _, text := range lines {
 		// Sample line from file:
 		// A         or   Amaj      [0 0 2 2 2 0] (Db E  A) : major triad
 		var re = regexp.MustCompile(`^(.*)\[(.*)\].*\((.*)\).*:(.*)`)
@@ -116,10 +127,6 @@ func parseChordFile() {
 				mappedChords[chordKey] = append(mappedChords[chordKey], newChord)
 			}
 		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
 	}
 
 }
