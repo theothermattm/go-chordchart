@@ -28,7 +28,7 @@ Chord source is [http://gospelmusic.org.uk/resources/chord_chart_big.htm](http:/
 # Downloading and Running (Mac)
 
 ```
-curl -L https://github.com/theothermattm/go-chordchart/raw/main/dist/go-chordchart > go-chordchart && chmod +x go-chordchart
+curl -L https://github.com/theothermattm/go-chordchart/raw/main/dist/go-chordchart-macos > go-chordchart && chmod +x go-chordchart
 ./go-chordchart
 ```
 
