@@ -25,7 +25,7 @@ Written in Go as a learning project.
 
 Chord source is [http://gospelmusic.org.uk/resources/chord_chart_big.htm](http://gospelmusic.org.uk/resources/chord_chart_big.htm)
 
-# Downloading and Running
+# Downloading and Running (Mac)
 
 ```
 curl -L https://github.com/theothermattm/go-chordchart/raw/main/dist/go-chordchart > go-chordchart && chmod +x go-chordchart
