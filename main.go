@@ -87,13 +87,13 @@ func parseChordFile() {
 	 }
 	filesBox, err := riceConf.FindBox("static")
 	if err != nil {
-		log.Fatal("can't get static")
+		log.Fatal("Can't access any static files")
 		log.Fatal(err)
 	}
 	// get file contents as string
 	chordsFileString, err := filesBox.String("chords.csv")
 	if err != nil {
-		log.Fatal("can't get the chords")
+		log.Fatal("Can't get chord file")
 		log.Fatal(err)
 	}
 	
