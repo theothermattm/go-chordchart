@@ -26,6 +26,8 @@ var (
 )
 
 func main() {
+	mappedChords = make(map[string][]chord)
+	parseChordFile()
 	var transformedInput = strings.Trim(strings.ToUpper(inputChord), " ")
 	fmt.Printf("Searching chord(s): {%s}\n\n", transformedInput)
 	fmt.Println(formatOutput(mappedChords[transformedInput]))
@@ -129,6 +131,21 @@ func parseChordFile() {
 
 }
 
+func parseOrChord(textArray []string) []chord {
+	var newChords []chord
+	var chordName = textArray[1]
+	var reOr = regexp.MustCompile(`^(.*)or(.*)`)
+	reOrResult := reOr.FindAllStringSubmatch(chordName, -1)
+	for _, n := range reOrResult {
+		var chordKey = strings.Trim(strings.ToUpper(n[1]), " ")
+		newChord := chord{name: strings.Trim(textArray[1], " "),
+			fingering: strings.Trim(textArray[2], " "), notes: strings.Trim(textArray[3], " "), chordType: strings.Trim(textArray[4], " ")}
+		log.Debug("Keying new chord with OR: {" + chordKey + "}\n")
+		newChords = append(newChords, newChord)
+	}
+	return newChords
+}
+
 func init() {
 	flag.StringVarP(&inputChord, "chord", "c", "", "Search Chords")
 	flag.BoolVarP(&debugMode, "debug", "d", false, "Debug Mode")
@@ -149,6 +166,4 @@ func init() {
 	  log.SetLevel(log.DebugLevel)
 	}
 
-	mappedChords = make(map[string][]chord)
-	parseChordFile()
 }
